@@ -1,0 +1,43 @@
+WOL webpage setup.
+
+This is probably insecure and only really useful on home local network; I
+suggest putting this behind a reverse SSH proxy.
+
+* sudo aptitude install etherwake acpitool ethtool pciutils
+* copy apache-cgi-section to /etc/apache2/sites-available/default-ssl
+  (or related). Should be placed in <VirtualHost _default_:443>
+* generate a login/password to protect the page
+
+  sudo htpasswd -cs /etc/apache2/wol-htaccess <user>
+  sudo chgrp www-data /etc/apache2/wol-htaccess
+
+* copy wake.py to cgi-bin directory and set permissions
+
+  sudo chown root:www-data /usr/lib/cgi-bin/wake.py
+  sudo chmod 0550 /usr/lib/cgi-bin/wake.py
+
+* allow all users to execute etherwake (as root), so webpage will work
+
+  sudo chmod u+s /usr/sbin/etherwake
+
+* enable WOL on all interfaces you care about
+
+  sudo ethtool -s eth0 wol g
+  sudo ethtool eth0
+
+* verify S5 state is set for ethernet cards
+
+  sudo lspci -k
+  acpitool -w
+
+* if state is *not* set, copy wake-on-lan-config to /etc/init.d, and make sure
+  to update pciNIC with your specific address; add to load before bringing up
+  network interfaces
+* copy wake-on-lan to /etc/network/
+* add custom handlers in /etc/network/interfaces to enable WOL on startup
+
+  iface eth0 inet dhcp
+    ...
+    post-up /etc/network/wake-on-lan
+    post-down /etc/network/wake-on-lan
+

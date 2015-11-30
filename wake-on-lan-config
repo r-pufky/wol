@@ -1,0 +1,16 @@
+#!/bin/bash -x
+#
+# Robert Pufky
+#
+# Ensure acpi knows to keep device enabled during S5 since acpitool acts as a
+# toggle; we only proceed if it needs enabling.
+
+wolKeyword="disabled"
+pciNIC="pci0000:02"
+
+wolEnabled=$(acpitool -w | grep "$pciNIC" | grep -o "$wolKeyword")
+if [ "$wolEnabled" = "$wolKeyword" ]; then
+  id=$(acpitool -w | grep "$pciNIC" | awk -F. '{print $1}' | sed 's/^[ t]*//')
+  acpitool -W $id
+fi
+

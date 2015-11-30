@@ -1,0 +1,13 @@
+ScriptAlias /wol/ /usr/lib/cgi-bin/
+<Directory "/usr/lib/cgi-bin">
+  AllowOverride AuthConfig
+  AddHandler cgi-script .py
+  Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+  Order deny,allow
+  Allow from all
+  AuthType Basic
+  AuthName 'WOL Password Required'
+  AuthUserFile /etc/apache2/wol-htaccess
+  Require user wakeywakey
+</Directory>
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Robert Pufky
+#
+# Enables WOL on network interfaces.
+#
+echo 'Enabling WOL on interfaces... '
+/usr/sbin/ethtool -s eth0 wol g
+echo 'done.'
+exit 0
+
